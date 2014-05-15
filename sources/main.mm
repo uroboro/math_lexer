@@ -2,40 +2,66 @@
 #include <stdio.h>
 #include <math.h>
 
-typedef enum {
+typedef enum MLTokenType {
 	kTokenTypeNumber,
 	kTokenTypeOperator,
 	kTokenTypeComparator,
+	kTokenTypeAssignment,
 	kTokenTypeSymbol,
-	kTokenTypeDelimiter
+	kTokenTypeDelimiter,
+	kTokenTypeEnd							// not really used for anything :P
 } MLTokenType;
 
-typedef enum {
-	kTokenSubtypeNumberInteger,
-	kTokenSubtypeNumberFloat,
+typedef enum MLTokenSubType {
+	kTokenSubtypeNumberInteger,				//long long
+	kTokenSubtypeNumberFloat,				//double
 
-	kTokenSubtypeOperatorPlus, //+
-	kTokenSubtypeOperatorMinus, //-
-	kTokenSubtypeOperatorMultiply, //*
-	kTokenSubtypeOperatorDivide, ///
-	kTokenSubtypeOperatorPower, //^
-	kTokenSubtypeOperatorMod, //%
-	kTokenSubtypeOperatorModulo, //||
-	kTokenSubTypeOperatorNot, //!
+	kTokenSubtypeOperatorPlus,				// +
+	kTokenSubtypeOperatorMinus,				// -
+	kTokenSubtypeOperatorMultiply,			// *
+	kTokenSubtypeOperatorDivide,			// /
+	kTokenSubtypeOperatorMod,				// %
+	//kTokenSubtypeOperatorModulo,			// |x| use symbol instead?
+	kTokenSubTypeOperatorNOT,				// !
+	kTokenSubTypeOperatorOR,				// |
+	kTokenSubTypeOperatorAND,				// &
+	kTokenSubtypeOperatorXOR,				// ^
+	kTokenSubTypeOperatorTernary,			// ?:
 
-	kTokenSubTypeComparatorLess, //<
-	kTokenSubTypeComparatorLessOrEqual, //<=
-	kTokenSubTypeComparatorEqual, //==
-	kTokenSubTypeComparatorNotEqual, //!=
-	kTokenSubTypeComparatorGreaterOrEqual, //>=
-	kTokenSubTypeComparatorGreater, //>
+	kTokenSubTypeComparatorLess,			// <
+	kTokenSubTypeComparatorLessOrEqual,		// <=
+	kTokenSubTypeComparatorEqual,			// ==
+	kTokenSubTypeComparatorNotEqual,		// !=
+	kTokenSubTypeComparatorGreaterOrEqual,	// >=
+	kTokenSubTypeComparatorGreater,			// >
+	kTokenSubTypeComparatorOR,				// ||
+	kTokenSubTypeComparatorAND,				// &&
+
+	kTokenSubTypeAssignment,				// =
+	kTokenSubTypeAssignmentAndAdd,			// +=
+	kTokenSubTypeAssignmentAndSubtract,		// -=
+	kTokenSubTypeAssignmentAndMultiply,		// *=
+	kTokenSubTypeAssignmentAndDivide,		// /=
+	kTokenSubTypeAssignmentAndMod,			// %=
+	kTokenSubTypeAssignmentAndOR,			// |=
+	kTokenSubTypeAssignmentAndAND,			// &=
+	kTokenSubTypeAssignmentAndXOR,			// ^=
 
 	kTokenSubTypeDelimiterSpace,
-	kTokenSubTypeDelimiterParenthesis, //()
-	kTokenSubTypeDelimiterBracket, //[]
-	kTokenSubTypeDelimiterBraces, //{}
+	kTokenSubTypeDelimiterParenthesis,		// ()
+	kTokenSubTypeDelimiterBracket,			// []
+	kTokenSubTypeDelimiterBraces,			// {}
+	kTokenSubTypeDelimiterDot,				// .
+	kTokenSubTypeDelimiterComma,			// ,
+	kTokenSubTypeDelimiterColon,			// :
+	kTokenSubTypeDelimiterSemiColon,		// ;
+	kTokenSubTypeDelimiterUnderscore,		// _
+	kTokenSubTypeDelimiterTilde,			// ~
+	kTokenSubTypeDelimiterAt,				// @
+	kTokenSubTypeDelimiterHash,				// #
+	kTokenSubTypeDelimiterDollar,			// $
 
-	kTokenSubTypeEnd
+	kTokenSubTypeEnd						// not really used for anything :P
 } MLTokenSubType;
 
 typedef struct MLToken {
@@ -45,22 +71,28 @@ typedef struct MLToken {
 	char *symbol;
 } MLToken;
 
-typedef enum {
+typedef enum MLExpressionType {
 	kExpressionTypeValue,
 	kExpressionTypeAssignment,
 	kExpressionTypeComparison
 } MLExpressionType;
 
-typedef struct {
+typedef struct MLExpression {
+	struct MLExpression *expressions;
 	MLToken *tokens;
 	MLExpressionType type;
 } MLExpression;
 
+typedef struct MLComplex {
+	double real;
+	double imaginary;
+} MLComplex;
+
 char MLTokenRequiresPair(MLToken *token);
-char *MLTokenString
+char *MLTokenString(MLToken *token);
 
 
-MLToken *parse(char *string);
+MLExpression *parse(char *string);
 MLComplex *eval(MLExpression *exp);
 
 int main(int argc, char **argv, char **envp) {
